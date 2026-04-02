@@ -1,222 +1,535 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <title>🪼 Jelly Focus Pro</title>
-    <style>
-        /* ... (копируем твои базовые стили) ... */
-        :root {
-            --bg-primary: #0a0a1a;
-            --bg-secondary: #111128;
-            --bg-card: rgba(20, 20, 50, 0.6);
-            --neon-work: #b44aff;
-            --neon-work-glow: rgba(180, 74, 255, 0.4);
-            --neon-rest: #00ffd5;
-            --neon-rest-glow: rgba(0, 255, 213, 0.4);
-            --neon-accent: #ff6b9d;
-            --neon-gold: #ffd700;
-            --text-primary: #e8e8f0;
-            --text-secondary: #8888aa;
-            --neon-current: var(--neon-work);
-            --neon-glow: var(--neon-work-glow);
-            --transition-speed: 1s;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>🪼 Jelly Focus Pro</title>
+  <style>
+    :root {
+      --bg-primary: #0a0a1a;
+      --bg-secondary: #111128;
+      --bg-card: rgba(20, 20, 50, 0.6);
+      --neon-work: #b44aff;
+      --neon-work-glow: rgba(180, 74, 255, 0.4);
+      --neon-rest: #00ffd5;
+      --neon-rest-glow: rgba(0, 255, 213, 0.4);
+      --neon-accent: #ff6b9d;
+      --text-primary: #e8e8f0;
+      --text-secondary: #8888aa;
+      --neon-current: var(--neon-work);
+      --neon-glow: var(--neon-work-glow);
+      --transition-speed: 0.6s;
+    }
 
-        /* Новые стили для категорий */
-        .category-selector {
-            display: flex;
-            gap: 5px;
-            margin-bottom: 10px;
-        }
-        .cat-tag {
-            font-size: 0.65rem;
-            padding: 2px 8px;
-            border-radius: 4px;
-            cursor: pointer;
-            border: 1px solid rgba(255,255,255,0.1);
-            transition: 0.2s;
-            background: rgba(255,255,255,0.05);
-        }
-        .cat-tag.active[data-cat="eng"] { border-color: #4a9eff; color: #4a9eff; box-shadow: 0 0 10px rgba(74,158,255,0.3); }
-        .cat-tag.active[data-cat="soc"] { border-color: #ff9e4a; color: #ff9e4a; box-shadow: 0 0 10px rgba(255,158,74,0.3); }
-        .cat-tag.active[data-cat="other"] { border-color: #a2a2a2; color: #eee; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, sans-serif;
+      color: var(--text-primary);
+      background: radial-gradient(circle at top, #18183d, var(--bg-primary));
+      min-height: 100vh;
+      padding: 16px;
+    }
 
-        .task-badge {
-            font-size: 0.6rem;
-            padding: 1px 5px;
-            border-radius: 3px;
-            margin-right: 8px;
-            text-transform: uppercase;
-        }
-        .badge-eng { background: rgba(74,158,255,0.2); color: #4a9eff; }
-        .badge-soc { background: rgba(255,158,74,0.2); color: #ff9e4a; }
+    .app-container {
+      max-width: 680px;
+      margin: 0 auto;
+      background: linear-gradient(160deg, rgba(28,28,64,.9), rgba(14,14,34,.9));
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 18px;
+      padding: 20px;
+      position: relative;
+      box-shadow: 0 20px 40px rgba(0,0,0,.35);
+    }
 
-        /* Глаза медузы в спящем режиме */
-        .jellyfish.sleeping .jelly-eye {
-            height: 2px;
-            margin-top: 6px;
-            border-radius: 1px;
-        }
+    .sound-toggle {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1.2rem;
+      z-index: 5;
+    }
+    .sound-toggle.active {
+      color: var(--neon-rest);
+      text-shadow: 0 0 10px var(--neon-rest);
+    }
 
-        /* Кнопка звука */
-        .sound-toggle {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            background: none;
-            border: none;
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-size: 1.2rem;
-            z-index: 10;
-        }
-        .sound-toggle.active { color: var(--neon-rest); text-shadow: 0 0 10px var(--neon-rest); }
-        
-        /* ... (вставь сюда остальные стили из своего файла) ... */
-    </style>
+    .jelly-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .jellyfish {
+      width: 90px;
+      height: 90px;
+      border-radius: 40% 40% 45% 45%;
+      background: radial-gradient(circle at 50% 25%, #ffd1ff, #b44aff 60%, #7623b7);
+      box-shadow: 0 0 28px var(--neon-glow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      animation: float 2.8s ease-in-out infinite;
+      transition: box-shadow var(--transition-speed);
+    }
+
+    .jelly-eye {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #0f0f22;
+      transition: all .25s ease;
+    }
+
+    .jellyfish.sleeping .jelly-eye {
+      height: 2px;
+      width: 11px;
+      margin-top: 6px;
+      border-radius: 1px;
+    }
+
+    @keyframes float {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    .timer-box {
+      text-align: center;
+      margin: 8px 0 20px;
+    }
+
+    .phase-label {
+      font-size: .85rem;
+      color: var(--text-secondary);
+      margin-bottom: 6px;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+
+    .timer-display {
+      font-size: clamp(2.2rem, 10vw, 3.8rem);
+      line-height: 1;
+      font-weight: 700;
+      color: var(--neon-current);
+      text-shadow: 0 0 16px var(--neon-glow);
+      margin-bottom: 14px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .timer-controls {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    button.ctrl {
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(255,255,255,.06);
+      color: var(--text-primary);
+      border-radius: 10px;
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    .tasks-section {
+      background: var(--bg-card);
+      border-radius: 12px;
+      padding: 14px;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .tasks-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .category-selector {
+      display: flex;
+      gap: 5px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+    }
+
+    .cat-tag {
+      font-size: .65rem;
+      padding: 2px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      border: 1px solid rgba(255,255,255,.1);
+      transition: .2s;
+      background: rgba(255,255,255,.05);
+      color: var(--text-primary);
+      user-select: none;
+    }
+
+    .cat-tag.active[data-cat="eng"] { border-color: #4a9eff; color: #4a9eff; box-shadow: 0 0 10px rgba(74,158,255,.3); }
+    .cat-tag.active[data-cat="soc"] { border-color: #ff9e4a; color: #ff9e4a; box-shadow: 0 0 10px rgba(255,158,74,.3); }
+    .cat-tag.active[data-cat="other"] { border-color: #a2a2a2; color: #eee; }
+
+    .task-input-area {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .task-input {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 8px;
+      color: var(--text-primary);
+      padding: 10px;
+    }
+
+    .btn-add {
+      border: 1px solid rgba(255,255,255,.2);
+      background: rgba(180,74,255,.18);
+      color: #fff;
+      border-radius: 8px;
+      width: 42px;
+      cursor: pointer;
+      font-size: 1.1rem;
+      line-height: 1;
+    }
+
+    #tasksList { display: grid; gap: 8px; }
+
+    .task-item {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 8px;
+      align-items: center;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 8px;
+      padding: 8px;
+    }
+
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: var(--text-secondary);
+      opacity: .8;
+    }
+
+    .task-checkbox {
+      width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      border: 2px solid rgba(255,255,255,.35);
+      cursor: pointer;
+    }
+
+    .task-checkbox.checked {
+      border-color: var(--neon-rest);
+      background: radial-gradient(circle, var(--neon-rest) 50%, transparent 51%);
+      box-shadow: 0 0 10px rgba(0,255,213,.4);
+    }
+
+    .task-badge {
+      font-size: .6rem;
+      padding: 1px 5px;
+      border-radius: 3px;
+      margin-right: 8px;
+      text-transform: uppercase;
+    }
+
+    .badge-eng { background: rgba(74,158,255,.2); color: #4a9eff; }
+    .badge-soc { background: rgba(255,158,74,.2); color: #ff9e4a; }
+
+    .task-delete {
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      font-size: 1rem;
+    }
+  </style>
 </head>
 <body>
-    <div class="app-container">
-        <button id="soundToggle" class="sound-toggle" onclick="toggleAmbience()" title="Глубоководный шум (M)">🌊</button>
+<div class="app-container">
+  <button id="soundToggle" class="sound-toggle" onclick="toggleAmbience()" title="Глубоководный шум (M)">🌊</button>
 
-        <section class="tasks-section">
-            <div class="tasks-header">
-                <h2>📋 Задачи</h2>
-                <span class="task-count" id="taskCount">0 / 0</span>
-            </div>
-            <div class="category-selector" id="catSelector">
-                <div class="cat-tag active" data-cat="other">Other (1)</div>
-                <div class="cat-tag" data-cat="eng">English (2)</div>
-                <div class="cat-tag" data-cat="soc">Social (3)</div>
-            </div>
-            <div class="task-input-area">
-                <input type="text" class="task-input" id="taskInput" placeholder="Что нужно сделать?">
-                <button class="btn-add" onclick="addTask()">+</button>
-            </div>
-            </section>
+  <div class="jelly-wrap">
+    <div class="jellyfish sleeping" id="jellyfish" aria-label="jellyfish">
+      <div class="jelly-eye"></div>
+      <div class="jelly-eye"></div>
+    </div>
+  </div>
+
+  <div class="timer-box">
+    <div class="phase-label" id="phaseLabel">focus</div>
+    <div class="timer-display" id="timerDisplay">25:00</div>
+    <div class="timer-controls">
+      <button class="ctrl" onclick="toggleTimer()">Start / Pause</button>
+      <button class="ctrl" onclick="resetTimer()">Reset</button>
+      <button class="ctrl" onclick="switchPhase()">Switch phase</button>
+    </div>
+  </div>
+
+  <section class="tasks-section">
+    <div class="tasks-header">
+      <h2>📋 Задачи</h2>
+      <span class="task-count" id="taskCount">0 / 0</span>
     </div>
 
+    <div class="category-selector" id="catSelector">
+      <div class="cat-tag active" data-cat="other">Other (1)</div>
+      <div class="cat-tag" data-cat="eng">English (2)</div>
+      <div class="cat-tag" data-cat="soc">Social (3)</div>
+    </div>
+
+    <div class="task-input-area">
+      <input type="text" class="task-input" id="taskInput" placeholder="Что нужно сделать?">
+      <button class="btn-add" onclick="addTask()">+</button>
+    </div>
+
+    <div id="tasksList"></div>
+  </section>
+</div>
+
 <script>
-// К существующему JS добавляем:
+  let currentTaskCat = 'other';
+  let audioCtx = null;
+  let noiseNode = null;
+  let noiseGain = null;
 
-let currentTaskCat = 'other';
-let audioCtx = null;
-let noiseNode = null;
-let noiseGain = null;
+  let tasks = [];
+  let isRunning = false;
+  let isWorkPhase = true;
+  let remainingSec = 25 * 60;
+  let timerId = null;
 
-// Переключение категорий кликом
-document.querySelectorAll('.cat-tag').forEach(tag => {
+  document.querySelectorAll('.cat-tag').forEach((tag) => {
     tag.addEventListener('click', () => {
-        document.querySelectorAll('.cat-tag').forEach(t => t.classList.remove('active'));
-        tag.classList.add('active');
-        currentTaskCat = tag.dataset.cat;
+      document.querySelectorAll('.cat-tag').forEach((t) => t.classList.remove('active'));
+      tag.classList.add('active');
+      currentTaskCat = tag.dataset.cat;
     });
-});
+  });
 
-// Синтезатор "Шума океана" (Web Audio API)
-function toggleAmbience() {
-    if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  function saveState() {
+    const state = { tasks, isWorkPhase, remainingSec };
+    localStorage.setItem('jelly-focus-state', JSON.stringify(state));
+  }
+
+  function loadState() {
+    const raw = localStorage.getItem('jelly-focus-state');
+    if (!raw) return;
+    try {
+      const state = JSON.parse(raw);
+      tasks = Array.isArray(state.tasks) ? state.tasks : [];
+      isWorkPhase = typeof state.isWorkPhase === 'boolean' ? state.isWorkPhase : true;
+      remainingSec = Number.isFinite(state.remainingSec)
+        ? state.remainingSec
+        : (isWorkPhase ? 25 * 60 : 5 * 60);
+    } catch (_err) {
+      tasks = [];
     }
+  }
 
-    if (noiseNode) {
-        noiseGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
-        setTimeout(() => {
-            noiseNode.stop();
-            noiseNode = null;
-            document.getElementById('soundToggle').classList.remove('active');
-        }, 500);
-    } else {
-        const bufferSize = 2 * audioCtx.sampleRate;
-        const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-        const output = noiseBuffer.getChannelData(0);
-        
-        // Генерация розового/коричневого шума (более мягкий)
-        let lastOut = 0.0;
-        for (let i = 0; i < bufferSize; i++) {
-            const white = Math.random() * 2 - 1;
-            output[i] = (lastOut + (0.02 * white)) / 1.02;
-            lastOut = output[i];
-            output[i] *= 3.5; // Усиление
-        }
+  function updateTaskCount() {
+    const done = tasks.filter((t) => t.completed).length;
+    document.getElementById('taskCount').textContent = `${done} / ${tasks.length}`;
+  }
 
-        noiseNode = audioCtx.createBufferSource();
-        noiseNode.buffer = noiseBuffer;
-        noiseNode.loop = true;
+  function updateTimerUi() {
+    const mm = String(Math.floor(remainingSec / 60)).padStart(2, '0');
+    const ss = String(remainingSec % 60).padStart(2, '0');
+    document.getElementById('timerDisplay').textContent = `${mm}:${ss}`;
 
-        noiseGain = audioCtx.createGain();
-        noiseGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-        noiseGain.gain.exponentialRampToValueAtTime(0.15, audioCtx.currentTime + 1);
+    const phase = isWorkPhase ? 'focus' : 'rest';
+    document.getElementById('phaseLabel').textContent = phase;
+    document.documentElement.style.setProperty('--neon-current', isWorkPhase ? 'var(--neon-work)' : 'var(--neon-rest)');
+    document.documentElement.style.setProperty('--neon-glow', isWorkPhase ? 'var(--neon-work-glow)' : 'var(--neon-rest-glow)');
+  }
 
-        // Фильтр низких частот для эффекта "под водой"
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 400;
+  function renderTasks() {
+    const list = document.getElementById('tasksList');
+    list.innerHTML = tasks.map((t) => {
+      const badge = t.cat === 'eng'
+        ? '<span class="task-badge badge-eng">ENG</span>'
+        : t.cat === 'soc'
+          ? '<span class="task-badge badge-soc">SOC</span>'
+          : '';
 
-        noiseNode.connect(filter);
-        filter.connect(noiseGain);
-        noiseGain.connect(audioCtx.destination);
+      return `
+        <div class="task-item${t.completed ? ' completed' : ''}">
+          <div class="task-checkbox${t.completed ? ' checked' : ''}" onclick="toggleTask(${t.id})"></div>
+          <span class="task-text">${badge}${escapeHtml(t.text)}</span>
+          <button class="task-delete" onclick="deleteTask(${t.id})">✕</button>
+        </div>
+      `;
+    }).join('');
 
-        noiseNode.start();
-        document.getElementById('soundToggle').classList.add('active');
-    }
-}
+    updateTaskCount();
+  }
 
-// Модифицированная функция addTask
-function addTask() {
+  function addTask() {
     const input = document.getElementById('taskInput');
     const text = input.value.trim();
     if (!text) return;
-    tasks.push({ 
-        id: Date.now(), 
-        text, 
-        completed: false, 
-        cat: currentTaskCat // Сохраняем категорию
+
+    tasks.push({
+      id: Date.now(),
+      text,
+      completed: false,
+      cat: currentTaskCat
     });
+
     input.value = '';
     renderTasks();
     saveState();
-}
+  }
 
-// Рендер с бейджами категорий
-function renderTasks() {
-    const list = document.getElementById('tasksList');
-    // ... (старая логика подсчета) ...
-    list.innerHTML = tasks.map(t => {
-        const badge = t.cat === 'eng' ? '<span class="task-badge badge-eng">ENG</span>' : 
-                      t.cat === 'soc' ? '<span class="task-badge badge-soc">SOC</span>' : '';
-        return `
-            <div class="task-item${t.completed ? ' completed' : ''}">
-                <div class="task-checkbox${t.completed ? ' checked' : ''}" onclick="toggleTask(${t.id})"></div>
-                <span class="task-text">${badge}${escapeHtml(t.text)}</span>
-                <button class="task-delete" onclick="deleteTask(${t.id})">✕</button>
-            </div>
-        `;
-    }).join('');
-}
+  function toggleTask(id) {
+    tasks = tasks.map((t) => t.id === id ? { ...t, completed: !t.completed } : t);
+    renderTasks();
+    saveState();
+  }
 
-// Обработка состояния медузы
-function updateJellyState() {
+  function deleteTask(id) {
+    tasks = tasks.filter((t) => t.id !== id);
+    renderTasks();
+    saveState();
+  }
+
+  function updateJellyState() {
     const jelly = document.getElementById('jellyfish');
-    if (isRunning) {
-        jelly.classList.remove('sleeping');
-    } else {
-        jelly.classList.add('sleeping');
-    }
-}
+    if (isRunning) jelly.classList.remove('sleeping');
+    else jelly.classList.add('sleeping');
+  }
 
-// Новые горячие клавиши
-document.addEventListener('keydown', (e) => {
+  function tick() {
+    remainingSec -= 1;
+    if (remainingSec <= 0) {
+      switchPhase();
+      return;
+    }
+
+    updateTimerUi();
+    saveState();
+  }
+
+  function toggleTimer() {
+    if (isRunning) {
+      clearInterval(timerId);
+      timerId = null;
+      isRunning = false;
+    } else {
+      isRunning = true;
+      timerId = setInterval(tick, 1000);
+    }
+
+    updateJellyState();
+  }
+
+  function resetTimer() {
+    clearInterval(timerId);
+    timerId = null;
+    isRunning = false;
+    remainingSec = isWorkPhase ? 25 * 60 : 5 * 60;
+    updateTimerUi();
+    updateJellyState();
+    saveState();
+  }
+
+  function switchPhase() {
+    isWorkPhase = !isWorkPhase;
+    remainingSec = isWorkPhase ? 25 * 60 : 5 * 60;
+    updateTimerUi();
+    saveState();
+  }
+
+  async function toggleAmbience() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+
+    if (audioCtx.state === 'suspended') {
+      await audioCtx.resume();
+    }
+
+    if (noiseNode) {
+      noiseGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+      setTimeout(() => {
+        noiseNode.stop();
+        noiseNode.disconnect();
+        noiseNode = null;
+        document.getElementById('soundToggle').classList.remove('active');
+      }, 500);
+      return;
+    }
+
+    const bufferSize = 2 * audioCtx.sampleRate;
+    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    let lastOut = 0.0;
+
+    for (let i = 0; i < bufferSize; i += 1) {
+      const white = Math.random() * 2 - 1;
+      output[i] = (lastOut + (0.02 * white)) / 1.02;
+      lastOut = output[i];
+      output[i] *= 3.5;
+    }
+
+    noiseNode = audioCtx.createBufferSource();
+    noiseNode.buffer = noiseBuffer;
+    noiseNode.loop = true;
+
+    noiseGain = audioCtx.createGain();
+    noiseGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+    noiseGain.gain.exponentialRampToValueAtTime(0.15, audioCtx.currentTime + 1);
+
+    const filter = audioCtx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 400;
+
+    noiseNode.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(audioCtx.destination);
+
+    noiseNode.start();
+    document.getElementById('soundToggle').classList.add('active');
+  }
+
+  document.getElementById('taskInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') addTask();
+  });
+
+  document.addEventListener('keydown', (e) => {
     if (document.activeElement.tagName === 'INPUT') return;
-    
+
     if (e.key === '1') document.querySelector('[data-cat="other"]').click();
     if (e.key === '2') document.querySelector('[data-cat="eng"]').click();
     if (e.key === '3') document.querySelector('[data-cat="soc"]').click();
     if (e.key.toLowerCase() === 'm') toggleAmbience();
-});
+    if (e.key === ' ') {
+      e.preventDefault();
+      toggleTimer();
+    }
+  });
 
-// Добавь вызов updateJellyState() внутрь функции toggleTimer()
+  loadState();
+  updateTimerUi();
+  renderTasks();
+  updateJellyState();
 </script>
 </body>
 </html>
