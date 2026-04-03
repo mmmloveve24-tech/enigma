@@ -1,535 +1,312 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>🪼 Jelly Focus Pro</title>
-  <style>
-    :root {
-      --bg-primary: #0a0a1a;
-      --bg-secondary: #111128;
-      --bg-card: rgba(20, 20, 50, 0.6);
-      --neon-work: #b44aff;
-      --neon-work-glow: rgba(180, 74, 255, 0.4);
-      --neon-rest: #00ffd5;
-      --neon-rest-glow: rgba(0, 255, 213, 0.4);
-      --neon-accent: #ff6b9d;
-      --text-primary: #e8e8f0;
-      --text-secondary: #8888aa;
-      --neon-current: var(--neon-work);
-      --neon-glow: var(--neon-work-glow);
-      --transition-speed: 0.6s;
-    }
-
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: Inter, Segoe UI, sans-serif;
-      color: var(--text-primary);
-      background: radial-gradient(circle at top, #18183d, var(--bg-primary));
-      min-height: 100vh;
-      padding: 16px;
-    }
-
-    .app-container {
-      max-width: 680px;
-      margin: 0 auto;
-      background: linear-gradient(160deg, rgba(28,28,64,.9), rgba(14,14,34,.9));
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 18px;
-      padding: 20px;
-      position: relative;
-      box-shadow: 0 20px 40px rgba(0,0,0,.35);
-    }
-
-    .sound-toggle {
-      position: absolute;
-      top: 16px;
-      right: 16px;
-      background: none;
-      border: none;
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 1.2rem;
-      z-index: 5;
-    }
-    .sound-toggle.active {
-      color: var(--neon-rest);
-      text-shadow: 0 0 10px var(--neon-rest);
-    }
-
-    .jelly-wrap {
-      display: flex;
-      justify-content: center;
-      margin-bottom: 10px;
-    }
-
-    .jellyfish {
-      width: 90px;
-      height: 90px;
-      border-radius: 40% 40% 45% 45%;
-      background: radial-gradient(circle at 50% 25%, #ffd1ff, #b44aff 60%, #7623b7);
-      box-shadow: 0 0 28px var(--neon-glow);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      animation: float 2.8s ease-in-out infinite;
-      transition: box-shadow var(--transition-speed);
-    }
-
-    .jelly-eye {
-      width: 10px;
-      height: 10px;
-      border-radius: 999px;
-      background: #0f0f22;
-      transition: all .25s ease;
-    }
-
-    .jellyfish.sleeping .jelly-eye {
-      height: 2px;
-      width: 11px;
-      margin-top: 6px;
-      border-radius: 1px;
-    }
-
-    @keyframes float {
-      0%,100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
-    }
-
-    .timer-box {
-      text-align: center;
-      margin: 8px 0 20px;
-    }
-
-    .phase-label {
-      font-size: .85rem;
-      color: var(--text-secondary);
-      margin-bottom: 6px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-    }
-
-    .timer-display {
-      font-size: clamp(2.2rem, 10vw, 3.8rem);
-      line-height: 1;
-      font-weight: 700;
-      color: var(--neon-current);
-      text-shadow: 0 0 16px var(--neon-glow);
-      margin-bottom: 14px;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .timer-controls {
-      display: flex;
-      justify-content: center;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-
-    button.ctrl {
-      border: 1px solid rgba(255,255,255,.14);
-      background: rgba(255,255,255,.06);
-      color: var(--text-primary);
-      border-radius: 10px;
-      padding: 8px 12px;
-      cursor: pointer;
-    }
-
-    .tasks-section {
-      background: var(--bg-card);
-      border-radius: 12px;
-      padding: 14px;
-      border: 1px solid rgba(255,255,255,.08);
-    }
-
-    .tasks-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 8px;
-    }
-
-    .category-selector {
-      display: flex;
-      gap: 5px;
-      margin-bottom: 10px;
-      flex-wrap: wrap;
-    }
-
-    .cat-tag {
-      font-size: .65rem;
-      padding: 2px 8px;
-      border-radius: 4px;
-      cursor: pointer;
-      border: 1px solid rgba(255,255,255,.1);
-      transition: .2s;
-      background: rgba(255,255,255,.05);
-      color: var(--text-primary);
-      user-select: none;
-    }
-
-    .cat-tag.active[data-cat="eng"] { border-color: #4a9eff; color: #4a9eff; box-shadow: 0 0 10px rgba(74,158,255,.3); }
-    .cat-tag.active[data-cat="soc"] { border-color: #ff9e4a; color: #ff9e4a; box-shadow: 0 0 10px rgba(255,158,74,.3); }
-    .cat-tag.active[data-cat="other"] { border-color: #a2a2a2; color: #eee; }
-
-    .task-input-area {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 8px;
-      margin-bottom: 10px;
-    }
-
-    .task-input {
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: 8px;
-      color: var(--text-primary);
-      padding: 10px;
-    }
-
-    .btn-add {
-      border: 1px solid rgba(255,255,255,.2);
-      background: rgba(180,74,255,.18);
-      color: #fff;
-      border-radius: 8px;
-      width: 42px;
-      cursor: pointer;
-      font-size: 1.1rem;
-      line-height: 1;
-    }
-
-    #tasksList { display: grid; gap: 8px; }
-
-    .task-item {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      gap: 8px;
-      align-items: center;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 8px;
-      padding: 8px;
-    }
-
-    .task-item.completed .task-text {
-      text-decoration: line-through;
-      color: var(--text-secondary);
-      opacity: .8;
-    }
-
-    .task-checkbox {
-      width: 18px;
-      height: 18px;
-      border-radius: 999px;
-      border: 2px solid rgba(255,255,255,.35);
-      cursor: pointer;
-    }
-
-    .task-checkbox.checked {
-      border-color: var(--neon-rest);
-      background: radial-gradient(circle, var(--neon-rest) 50%, transparent 51%);
-      box-shadow: 0 0 10px rgba(0,255,213,.4);
-    }
-
-    .task-badge {
-      font-size: .6rem;
-      padding: 1px 5px;
-      border-radius: 3px;
-      margin-right: 8px;
-      text-transform: uppercase;
-    }
-
-    .badge-eng { background: rgba(74,158,255,.2); color: #4a9eff; }
-    .badge-soc { background: rgba(255,158,74,.2); color: #ff9e4a; }
-
-    .task-delete {
-      border: none;
-      background: transparent;
-      color: var(--text-secondary);
-      cursor: pointer;
-      font-size: 1rem;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Deep Sea Pixel Wallpaper</title>
+<style>
+  body { margin: 0; background: #06101e; display: flex; justify-content: center; align-items: flex-start; padding: 2rem 0; min-height: 100vh; }
+  #wrap { display: flex; justify-content: center; align-items: flex-start; }
+  #c { image-rendering: pixelated; image-rendering: crisp-edges; height: min(82vh, 580px); width: auto; display: block; border-radius: 14px; box-shadow: 0 0 60px #0a1830; }
+</style>
 </head>
 <body>
-<div class="app-container">
-  <button id="soundToggle" class="sound-toggle" onclick="toggleAmbience()" title="Глубоководный шум (M)">🌊</button>
-
-  <div class="jelly-wrap">
-    <div class="jellyfish sleeping" id="jellyfish" aria-label="jellyfish">
-      <div class="jelly-eye"></div>
-      <div class="jelly-eye"></div>
-    </div>
-  </div>
-
-  <div class="timer-box">
-    <div class="phase-label" id="phaseLabel">focus</div>
-    <div class="timer-display" id="timerDisplay">25:00</div>
-    <div class="timer-controls">
-      <button class="ctrl" onclick="toggleTimer()">Start / Pause</button>
-      <button class="ctrl" onclick="resetTimer()">Reset</button>
-      <button class="ctrl" onclick="switchPhase()">Switch phase</button>
-    </div>
-  </div>
-
-  <section class="tasks-section">
-    <div class="tasks-header">
-      <h2>📋 Задачи</h2>
-      <span class="task-count" id="taskCount">0 / 0</span>
-    </div>
-
-    <div class="category-selector" id="catSelector">
-      <div class="cat-tag active" data-cat="other">Other (1)</div>
-      <div class="cat-tag" data-cat="eng">English (2)</div>
-      <div class="cat-tag" data-cat="soc">Social (3)</div>
-    </div>
-
-    <div class="task-input-area">
-      <input type="text" class="task-input" id="taskInput" placeholder="Что нужно сделать?">
-      <button class="btn-add" onclick="addTask()">+</button>
-    </div>
-
-    <div id="tasksList"></div>
-  </section>
-</div>
-
+<div id="wrap"><canvas id="c"></canvas></div>
 <script>
-  let currentTaskCat = 'other';
-  let audioCtx = null;
-  let noiseNode = null;
-  let noiseGain = null;
+(function(){
+const AW=120, AH=213, SC=3;
+const cvs = document.getElementById('c');
+cvs.width = AW*SC;
+cvs.height = AH*SC;
+const ctx = cvs.getContext('2d');
+ctx.imageSmoothingEnabled = false;
 
-  let tasks = [];
-  let isRunning = false;
-  let isWorkPhase = true;
-  let remainingSec = 25 * 60;
-  let timerId = null;
+// Helpers
+const p   = (x, y, w, h) => ctx.fillRect(x*SC, y*SC, (w||1)*SC, (h||1)*SC);
+const clr = (r, g, b, a) => { ctx.fillStyle = a !== undefined ? `rgba(${r},${g},${b},${a})` : `rgb(${r},${g},${b})`; };
 
-  document.querySelectorAll('.cat-tag').forEach((tag) => {
-    tag.addEventListener('click', () => {
-      document.querySelectorAll('.cat-tag').forEach((t) => t.classList.remove('active'));
-      tag.classList.add('active');
-      currentTaskCat = tag.dataset.cat;
-    });
-  });
+// ── Entities ──────────────────────────────────────────────────────────────────
 
-  function escapeHtml(str) {
-    return str
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#039;');
+const jellies = [
+  { x:22,  y:165, vy:-0.024, phase:0.0, r:0,  g:190, b:255 },
+  { x:80,  y:100, vy:-0.019, phase:2.0, r:0,  g:140, b:230 },
+  { x:97,  y:178, vy:-0.021, phase:4.2, r:30, g:170, b:255 },
+  { x:12,  y:75,  vy:-0.016, phase:1.2, r:0,  g:210, b:245 },
+];
+
+const school = { x:55, y:82, vx:0.11, dir:1 };
+const fishOff = [
+  { dx:0,   dy:0  }, { dx:9,   dy:-2 }, { dx:-8,  dy:3  }, { dx:15,  dy:1  },
+  { dx:-13, dy:-3 }, { dx:7,   dy:5  }, { dx:21,  dy:-1 }, { dx:-5,  dy:-5 },
+  { dx:18,  dy:4  }, { dx:-10, dy:4  },
+];
+
+const squids = [
+  { x:-38,  y:126, vx:0.09, dir:1  },
+  { x:148,  y:153, vx:0.06, dir:-1 },
+];
+
+const plankton = Array.from({ length:48 }, () => ({
+  x:  Math.random() * AW,
+  y:  6 + Math.random() * (AH * 0.88),
+  ph: Math.random() * 6.28,
+  sz: Math.random() < 0.22 ? 2 : 1,
+}));
+
+const rockDefs = [
+  { x:0,  base:AH,  seg:[0,13, 8,9,  14,12, 22,6,  30,10, 37,8,  44,13, 52,14] },
+  { x:42, base:AH,  seg:[0,10, 7,6,  14,10, 22,4,  30,8,  38,10]               },
+  { x:80, base:AH,  seg:[0,11, 9,7,  16,10, 25,3,  33,8,  42,11]               },
+  { x:8,  base:207, seg:[0,5,  5,2,  11,4,  17,1,  23,3,  29,5]                },
+  { x:62, base:207, seg:[0,4,  5,1,  10,3,  15,1,  20,3,  25,4]                },
+];
+
+// ── Draw functions ────────────────────────────────────────────────────────────
+
+function drawBG() {
+  const g = ctx.createLinearGradient(0, 0, 0, cvs.height);
+  g.addColorStop(0,   '#0d2145');
+  g.addColorStop(0.3, '#091830');
+  g.addColorStop(0.6, '#060f1e');
+  g.addColorStop(1,   '#030810');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, cvs.width, cvs.height);
+  // Subtle scanlines for 16-bit depth
+  clr(20, 60, 120, 0.022);
+  for (let r = 0; r < AH; r += 4) ctx.fillRect(0, r*SC, cvs.width, SC);
+}
+
+function drawCaustics(t) {
+  for (let i = 0; i < 6; i++) {
+    const cx = ((i*23 + Math.sin(t*0.22 + i*1.1)*9 + AW) % AW) * SC;
+    const cy = (8 + i*19 + Math.sin(t*0.31 + i*0.8)*5) * SC;
+    const gr = ctx.createRadialGradient(cx, cy, SC, cx, cy, 24*SC);
+    gr.addColorStop(0, 'rgba(14,65,145,.07)');
+    gr.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = gr;
+    ctx.fillRect(0, 0, cvs.width, cvs.height);
   }
+}
 
-  function saveState() {
-    const state = { tasks, isWorkPhase, remainingSec };
-    localStorage.setItem('jelly-focus-state', JSON.stringify(state));
+function drawPlankton(t) {
+  for (const pk of plankton) {
+    clr(80, 195, 255, 0.2 + Math.sin(t*1.85 + pk.ph) * 0.18);
+    p(Math.round(pk.x), Math.round(pk.y), pk.sz, pk.sz);
   }
+}
 
-  function loadState() {
-    const raw = localStorage.getItem('jelly-focus-state');
-    if (!raw) return;
-    try {
-      const state = JSON.parse(raw);
-      tasks = Array.isArray(state.tasks) ? state.tasks : [];
-      isWorkPhase = typeof state.isWorkPhase === 'boolean' ? state.isWorkPhase : true;
-      remainingSec = Number.isFinite(state.remainingSec)
-        ? state.remainingSec
-        : (isWorkPhase ? 25 * 60 : 5 * 60);
-    } catch (_err) {
-      tasks = [];
+function drawFloor(t) {
+  // Base floor fill
+  clr(4, 10, 18, 1);
+  p(0, 200, AW, AH - 200);
+
+  // Rock formations
+  for (const rd of rockDefs) {
+    const seg = rd.seg;
+    clr(9, 21, 34, 1);
+    for (let i = 0; i < seg.length - 2; i += 2) {
+      const x0=seg[i], h0=seg[i+1], x1=seg[i+2], h1=seg[i+3];
+      for (let rx = x0; rx < x1; rx++) {
+        const frac = (rx - x0) / (x1 - x0);
+        const rh   = Math.max(1, Math.round(h0 + (h1 - h0) * frac));
+        p(rd.x + rx, rd.base - rh, 1, rh);
+      }
+    }
+    // Highlight edge
+    clr(15, 34, 55, 0.5);
+    for (let i = 0; i < seg.length - 2; i += 2) {
+      const x0=seg[i], h0=seg[i+1], x1=seg[i+2], h1=seg[i+3];
+      p(rd.x + Math.round((x0+x1)/2), rd.base - Math.round((h0+h1)/2), 1, 1);
     }
   }
 
-  function updateTaskCount() {
-    const done = tasks.filter((t) => t.completed).length;
-    document.getElementById('taskCount').textContent = `${done} / ${tasks.length}`;
+  // Sediment glow
+  for (let i = 0; i < 24; i++) {
+    clr(55, 150, 195, 0.1 + Math.sin(t*1.1 + i*0.65) * 0.07);
+    p((i*5 + 2) % AW, 200 + (i % 4), 1, 1);
   }
+}
 
-  function updateTimerUi() {
-    const mm = String(Math.floor(remainingSec / 60)).padStart(2, '0');
-    const ss = String(remainingSec % 60).padStart(2, '0');
-    document.getElementById('timerDisplay').textContent = `${mm}:${ss}`;
+// Jellyfish bell shape: [offsetX, offsetY, width]
+const BELL = [
+  [2,0,4], [1,1,6], [0,2,8], [0,3,8],
+  [0,4,8], [1,5,6], [2,6,4],
+];
 
-    const phase = isWorkPhase ? 'focus' : 'rest';
-    document.getElementById('phaseLabel').textContent = phase;
-    document.documentElement.style.setProperty('--neon-current', isWorkPhase ? 'var(--neon-work)' : 'var(--neon-rest)');
-    document.documentElement.style.setProperty('--neon-glow', isWorkPhase ? 'var(--neon-work-glow)' : 'var(--neon-rest-glow)');
-  }
+function drawJelly(jx, jy, phase, r, g, b, t) {
+  const pulse = Math.sin(t*1.6 + phase);
+  const gx = Math.round(jx) - 4;
+  const gy = Math.round(jy);
 
-  function renderTasks() {
-    const list = document.getElementById('tasksList');
-    list.innerHTML = tasks.map((t) => {
-      const badge = t.cat === 'eng'
-        ? '<span class="task-badge badge-eng">ENG</span>'
-        : t.cat === 'soc'
-          ? '<span class="task-badge badge-soc">SOC</span>'
-          : '';
+  // Glow aura
+  clr(r, g, b, 0.09 + pulse * 0.04);
+  for (const [ox,oy,w] of BELL) p(gx+ox-1, gy+oy-1, w+2, 3);
 
-      return `
-        <div class="task-item${t.completed ? ' completed' : ''}">
-          <div class="task-checkbox${t.completed ? ' checked' : ''}" onclick="toggleTask(${t.id})"></div>
-          <span class="task-text">${badge}${escapeHtml(t.text)}</span>
-          <button class="task-delete" onclick="deleteTask(${t.id})">✕</button>
-        </div>
-      `;
-    }).join('');
+  // Bell body
+  clr(r, g, b, 0.52 + pulse * 0.1);
+  for (const [ox,oy,w] of BELL) p(gx+ox, gy+oy, w, 1);
 
-    updateTaskCount();
-  }
+  // Specular highlight
+  clr(255, 255, 255, 0.18 + pulse * 0.06);
+  p(gx+2, gy+1, 3, 2);
+  p(gx+3, gy,   2, 1);
 
-  function addTask() {
-    const input = document.getElementById('taskInput');
-    const text = input.value.trim();
-    if (!text) return;
+  // Tentacle roots
+  clr(r, g, b, 0.9);
+  p(gx+1, gy+5, 1, 1);
+  p(gx+3, gy+5, 1, 1);
+  p(gx+5, gy+5, 1, 1);
 
-    tasks.push({
-      id: Date.now(),
-      text,
-      completed: false,
-      cat: currentTaskCat
-    });
-
-    input.value = '';
-    renderTasks();
-    saveState();
-  }
-
-  function toggleTask(id) {
-    tasks = tasks.map((t) => t.id === id ? { ...t, completed: !t.completed } : t);
-    renderTasks();
-    saveState();
-  }
-
-  function deleteTask(id) {
-    tasks = tasks.filter((t) => t.id !== id);
-    renderTasks();
-    saveState();
-  }
-
-  function updateJellyState() {
-    const jelly = document.getElementById('jellyfish');
-    if (isRunning) jelly.classList.remove('sleeping');
-    else jelly.classList.add('sleeping');
-  }
-
-  function tick() {
-    remainingSec -= 1;
-    if (remainingSec <= 0) {
-      switchPhase();
-      return;
+  // Tentacles (4 strands)
+  const tX  = [gx+1, gx+3, gx+5, gx+7];
+  const tLen = 9 + Math.round(pulse * 2);
+  for (let i = 0; i < 4; i++) {
+    for (let s = 0; s < tLen; s++) {
+      const ty   = gy + 7 + s;
+      if (ty >= 200) break;
+      const wave = Math.round(Math.sin(t*2.3 + phase + i + s*0.35) * 1.5);
+      const a    = Math.max(0, (0.5 - s/tLen*0.42) * (0.65 + pulse*0.15));
+      clr(r, g, b, a);
+      p(Math.max(0, Math.min(AW-1, tX[i] + wave)), ty, 1, 1);
     }
-
-    updateTimerUi();
-    saveState();
   }
+}
 
-  function toggleTimer() {
-    if (isRunning) {
-      clearInterval(timerId);
-      timerId = null;
-      isRunning = false;
-    } else {
-      isRunning = true;
-      timerId = setInterval(tick, 1000);
-    }
+function drawFish(fx, fy, dir, r, g, b, a) {
+  fx = Math.round(fx);
+  fy = Math.round(fy);
+  if (fx < -6 || fx > AW + 6) return;
+  // Body
+  clr(r, g, b, a);
+  p(fx+1, fy,   3, 1);
+  p(fx,   fy+1, 5, 1);
+  p(fx+1, fy+2, 3, 1);
+  // Eye
+  clr(Math.min(r+80,255), Math.min(g+80,255), 255, a);
+  p(dir >= 0 ? fx+4 : fx, fy+1, 1, 1);
+  // Tail
+  clr(r, g, b, a * 0.6);
+  const tx = dir >= 0 ? fx : fx + 4;
+  p(tx, fy,   1, 1);
+  p(tx, fy+2, 1, 1);
+}
 
-    updateJellyState();
+function drawSchool(t) {
+  for (let i = 0; i < fishOff.length; i++) {
+    const fo  = fishOff[i];
+    const wv  = Math.sin(t*1.9 + i*0.65) * 1.3;
+    const a   = 0.38 + Math.sin(t*0.5 + i*0.4) * 0.1;
+    drawFish(school.x + fo.dx, school.y + fo.dy + wv, school.dir, 190, 215, 240, a);
   }
+}
 
-  function resetTimer() {
-    clearInterval(timerId);
-    timerId = null;
-    isRunning = false;
-    remainingSec = isWorkPhase ? 25 * 60 : 5 * 60;
-    updateTimerUi();
-    updateJellyState();
-    saveState();
+// Squid mantle shape: [offsetX, offsetY, width]
+const MANTLE = [
+  [4,0,6], [2,1,10], [1,2,12], [0,3,14],
+  [1,4,12], [2,5,10], [4,6,6], [5,7,4], [6,8,2],
+];
+
+function drawSquid(sq, t) {
+  const gx = Math.round(sq.x);
+  const gy = Math.round(sq.y + Math.sin(t*1.1 + sq.x*0.06) * 1.2);
+
+  // Mantle glow
+  clr(175, 55, 75, 0.11);
+  for (const [ox,oy,w] of MANTLE) p(gx+ox-1, gy+oy-1, w+2, 3);
+
+  // Mantle body
+  clr(150, 46, 63, 0.82);
+  for (const [ox,oy,w] of MANTLE) p(gx+ox, gy+oy, w, 1);
+
+  // Internal pattern highlight
+  clr(200, 98, 118, 0.28);
+  p(gx+3, gy+1, 8, 1);
+  p(gx+2, gy+2, 9, 1);
+
+  // Fins
+  clr(122, 37, 53, 0.72);
+  if (sq.dir > 0) { p(gx-1, gy+2, 2, 3); p(gx-2, gy+3, 1, 2); }
+  else            { p(gx+13, gy+2, 2, 3); p(gx+15, gy+3, 1, 2); }
+
+  // Eye
+  const ex = sq.dir > 0 ? gx+10 : gx+2;
+  clr(255, 162, 172, 0.92);
+  p(ex, gy+3, 2, 2);
+  clr(12, 4, 7, 1);
+  p(ex, gy+3, 1, 1);
+
+  // Tentacles (8 strands, waving)
+  const hx = sq.dir > 0 ? gx+14 : gx-1;
+  for (let i = 0; i < 8; i++) {
+    const ty = gy + 1 + Math.floor(i * 0.85);
+    const tl = 3 + (i % 4);
+    const tw = Math.round(Math.sin(t*3.2 + i*0.85) * 1);
+    clr(193, 70, 88, Math.max(0, 0.6 - i*0.045));
+    for (let s = 0; s < tl; s++) {
+      const tx = sq.dir > 0 ? hx + s : hx - s;
+      if (tx >= 0 && tx < AW) p(tx, ty + tw, 1, 1);
+    }
   }
+}
 
-  function switchPhase() {
-    isWorkPhase = !isWorkPhase;
-    remainingSec = isWorkPhase ? 25 * 60 : 5 * 60;
-    updateTimerUi();
-    saveState();
+function drawVignette() {
+  const cx = cvs.width / 2, cy = cvs.height / 2;
+  const gr = ctx.createRadialGradient(cx, cy, cvs.height*0.18, cx, cy, cvs.height*0.72);
+  gr.addColorStop(0, 'rgba(0,0,0,0)');
+  gr.addColorStop(1, 'rgba(0,2,8,.58)');
+  ctx.fillStyle = gr;
+  ctx.fillRect(0, 0, cvs.width, cvs.height);
+}
+
+function drawTimerGlow() {
+  const cx = 60 * SC, cy = 98 * SC;
+  const gr = ctx.createRadialGradient(cx, cy, 4, cx, cy, 52*SC);
+  gr.addColorStop(0,   'rgba(0,110,255,.042)');
+  gr.addColorStop(0.6, 'rgba(0,60,180,.015)');
+  gr.addColorStop(1,   'rgba(0,0,0,0)');
+  ctx.fillStyle = gr;
+  ctx.fillRect(0, 0, cvs.width, cvs.height);
+}
+
+// ── Game loop ─────────────────────────────────────────────────────────────────
+
+function update(t) {
+  for (const j of jellies) {
+    j.y += j.vy;
+    if (j.y < -26) { j.y = AH + 8; j.x = 8 + Math.random() * (AW - 16); }
   }
-
-  async function toggleAmbience() {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    }
-
-    if (audioCtx.state === 'suspended') {
-      await audioCtx.resume();
-    }
-
-    if (noiseNode) {
-      noiseGain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
-      setTimeout(() => {
-        noiseNode.stop();
-        noiseNode.disconnect();
-        noiseNode = null;
-        document.getElementById('soundToggle').classList.remove('active');
-      }, 500);
-      return;
-    }
-
-    const bufferSize = 2 * audioCtx.sampleRate;
-    const noiseBuffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const output = noiseBuffer.getChannelData(0);
-    let lastOut = 0.0;
-
-    for (let i = 0; i < bufferSize; i += 1) {
-      const white = Math.random() * 2 - 1;
-      output[i] = (lastOut + (0.02 * white)) / 1.02;
-      lastOut = output[i];
-      output[i] *= 3.5;
-    }
-
-    noiseNode = audioCtx.createBufferSource();
-    noiseNode.buffer = noiseBuffer;
-    noiseNode.loop = true;
-
-    noiseGain = audioCtx.createGain();
-    noiseGain.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-    noiseGain.gain.exponentialRampToValueAtTime(0.15, audioCtx.currentTime + 1);
-
-    const filter = audioCtx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 400;
-
-    noiseNode.connect(filter);
-    filter.connect(noiseGain);
-    noiseGain.connect(audioCtx.destination);
-
-    noiseNode.start();
-    document.getElementById('soundToggle').classList.add('active');
+  for (const s of squids) {
+    s.x += s.vx * s.dir;
+    if (s.dir >  0 && s.x >  AW + 42) s.x = -42;
+    if (s.dir < 0  && s.x < -42)      s.x =  AW + 42;
   }
+  school.x += school.vx * school.dir;
+  if (school.dir >  0 && school.x >  AW + 28) school.dir = -1;
+  if (school.dir < 0  && school.x < -28)       school.dir =  1;
+  school.y = 82 + Math.sin(t * 0.28) * 12;
+}
 
-  document.getElementById('taskInput').addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') addTask();
-  });
+function draw(t) {
+  ctx.clearRect(0, 0, cvs.width, cvs.height);
+  drawBG();
+  drawCaustics(t);
+  drawPlankton(t);
+  drawFloor(t);
+  drawSchool(t);
+  for (const s of squids) drawSquid(s, t);
+  for (const j of jellies) drawJelly(j.x, j.y, j.phase, j.r, j.g, j.b, t);
+  drawVignette();
+  drawTimerGlow();
+}
 
-  document.addEventListener('keydown', (e) => {
-    if (document.activeElement.tagName === 'INPUT') return;
-
-    if (e.key === '1') document.querySelector('[data-cat="other"]').click();
-    if (e.key === '2') document.querySelector('[data-cat="eng"]').click();
-    if (e.key === '3') document.querySelector('[data-cat="soc"]').click();
-    if (e.key.toLowerCase() === 'm') toggleAmbience();
-    if (e.key === ' ') {
-      e.preventDefault();
-      toggleTimer();
-    }
-  });
-
-  loadState();
-  updateTimerUi();
-  renderTasks();
-  updateJellyState();
+function loop(ts) {
+  const t = ts / 1000;
+  update(t);
+  draw(t);
+  requestAnimationFrame(loop);
+}
+requestAnimationFrame(loop);
+})();
 </script>
 </body>
 </html>
