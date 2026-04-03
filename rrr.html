@@ -1,48 +1,650 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enigma</title>
-    <meta name="description" content="An enhanced interactive experience with accessibility and performance optimizations.">
-    <style>
-        /* Theming options can be implemented through classes. */
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            color: #333;
-            line-height: 1.6;
-        }
-        /* Add styles for mobile responsiveness */
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="Анимированная сцена под морским дном с медузами, рыбами и кальмарами на интерактивном канвасе"
+  />
+  <meta
+    name="keywords"
+    content="canvas анимация, подводный мир, JavaScript, медузы, рыбы, кальмары"
+  />
+  <meta name="theme-color" content="#06101e" />
+  <title>Deep Sea Pixel Wallpaper</title>
+  <style>
+    :root {
+      --bg-dark: #06101e;
+      --bg-medium: #091830;
+      --bg-light: #060f1e;
+      --bg-lighter: #030810;
+      --btn-bg: rgba(14, 65, 145, 0.6);
+      --btn-border: rgba(14, 65, 145, 0.8);
+      --btn-text: #50d9ff;
+      --info-text: rgba(80, 217, 255, 0.7);
+    }
+
+    html[data-theme='light'] {
+      --bg-dark: #f5f5f5;
+      --bg-medium: #e8e8e8;
+      --bg-light: #dcdcdc;
+      --bg-lighter: #cccccc;
+      --btn-bg: rgba(90, 130, 210, 0.35);
+      --btn-border: rgba(90, 130, 210, 0.7);
+      --btn-text: #0d3f8f;
+      --info-text: rgba(12, 62, 135, 0.75);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem 1rem;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(160deg, var(--bg-medium), var(--bg-dark));
+      color: #fff;
+    }
+
+    #wrap {
+      position: relative;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #c {
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+      width: auto;
+      height: min(82vh, 580px);
+      max-width: 100%;
+      display: block;
+      border-radius: 14px;
+      box-shadow: 0 0 60px rgba(10, 24, 48, 0.8);
+      cursor: crosshair;
+      touch-action: none;
+    }
+
+    #controls {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      gap: 10px;
+      z-index: 1;
+    }
+
+    .btn {
+      border: 1px solid var(--btn-border);
+      background: var(--btn-bg);
+      color: var(--btn-text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: transform 0.2s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .btn:hover {
+      background: color-mix(in srgb, var(--btn-bg) 45%, #2f88ff);
+      box-shadow: 0 0 10px rgba(80, 217, 255, 0.5);
+    }
+
+    .btn:active {
+      transform: scale(0.96);
+    }
+
+    #info {
+      position: absolute;
+      left: 20px;
+      bottom: 20px;
+      font-size: 12px;
+      color: var(--info-text);
+      font-family: 'Courier New', monospace;
+      user-select: none;
+      display: none;
+    }
+
+    noscript {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(10, 24, 48, 0.92);
+      color: #50d9ff;
+      border-radius: 8px;
+      padding: 20px;
+      max-width: min(92vw, 580px);
+      text-align: center;
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      #c {
+        height: min(90vh, 420px);
+      }
+
+      #controls {
+        top: 10px;
+        right: 10px;
+        gap: 6px;
+      }
+
+      .btn {
+        padding: 6px 10px;
+        font-size: 11px;
+      }
+
+      #info {
+        left: 10px;
+        bottom: 10px;
+        font-size: 10px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      * {
+        animation: none !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+  </style>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Enigma</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Home</a></li>
-                <li><a href="#">About</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
-    </header>
-    <main>
-        <p>This is the interactive experience powered by enhanced features.</p>
-        <script>
-            // JavaScript for handling interactivity
-            document.addEventListener('DOMContentLoaded', function() {
-                // Initialization code here
-            });
-        </script>
-    </main>
-    <footer>
-        <p>&copy; 2026 Enigma. All rights reserved.</p>
-    </footer>
+  <noscript>
+    Этот сайт требует JavaScript для отображения анимированной подводной сцены.
+    Пожалуйста, включите JavaScript в настройках браузера.
+  </noscript>
+
+  <div id="wrap">
+    <canvas
+      id="c"
+      role="img"
+      aria-label="Интерактивная подводная анимация. Нажмите, чтобы создавать пузыри."
+    ></canvas>
+
+    <div id="controls" aria-label="Управление сценой">
+      <button class="btn" id="toggleTheme" type="button" title="Переключить тему">🌙</button>
+      <button class="btn" id="togglePause" type="button" title="Пауза/воспроизведение">⏸</button>
+      <button class="btn" id="toggleInfo" type="button" title="Показать информацию">ℹ</button>
+    </div>
+
+    <div id="info" aria-live="polite">
+      FPS: <span id="fps">60</span><br />
+      Entities: <span id="entities">0</span><br />
+      Click/tap to create bubbles
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const CONFIG = Object.freeze({
+        width: 120,
+        height: 213,
+        scale: 3,
+        bubbleLifetime: 30,
+        bubbleSpeed: 0.5,
+        maxBubbles: 320,
+      });
+
+      const cvs = document.getElementById('c');
+      const themeBtn = document.getElementById('toggleTheme');
+      const pauseBtn = document.getElementById('togglePause');
+      const infoBtn = document.getElementById('toggleInfo');
+      const infoPanel = document.getElementById('info');
+      const fpsCounter = document.getElementById('fps');
+      const entityCounter = document.getElementById('entities');
+
+      const ctx = cvs.getContext('2d', { alpha: true });
+      if (!ctx) return;
+
+      const state = {
+        isPaused: false,
+        isDarkTheme: true,
+        showInfo: false,
+        dpr: Math.min(window.devicePixelRatio || 1, 2),
+        bubbles: [],
+        frameCount: 0,
+        lastFpsTime: performance.now(),
+        fps: 60,
+        previousPausedState: false,
+      };
+
+      function initCanvas() {
+        state.dpr = Math.min(window.devicePixelRatio || 1, 2);
+
+        const logicalWidth = CONFIG.width * CONFIG.scale;
+        const logicalHeight = CONFIG.height * CONFIG.scale;
+
+        cvs.width = Math.round(logicalWidth * state.dpr);
+        cvs.height = Math.round(logicalHeight * state.dpr);
+        cvs.style.width = `${logicalWidth}px`;
+        cvs.style.height = `${logicalHeight}px`;
+
+        ctx.setTransform(state.dpr, 0, 0, state.dpr, 0, 0);
+        ctx.imageSmoothingEnabled = false;
+      }
+
+      const p = (x, y, w = 1, h = 1) => {
+        ctx.fillRect(
+          x * CONFIG.scale,
+          y * CONFIG.scale,
+          w * CONFIG.scale,
+          h * CONFIG.scale
+        );
+      };
+
+      const clr = (r, g, b, a) => {
+        ctx.fillStyle =
+          a === undefined ? `rgb(${r},${g},${b})` : `rgba(${r},${g},${b},${a})`;
+      };
+
+      const jellies = [
+        { x: 22, y: 165, vy: -0.024, phase: 0.0, r: 0, g: 190, b: 255 },
+        { x: 80, y: 100, vy: -0.019, phase: 2.0, r: 0, g: 140, b: 230 },
+        { x: 97, y: 178, vy: -0.021, phase: 4.2, r: 30, g: 170, b: 255 },
+        { x: 12, y: 75, vy: -0.016, phase: 1.2, r: 0, g: 210, b: 245 },
+      ];
+
+      const school = { x: 55, y: 82, vx: 0.11, dir: 1 };
+      const fishOff = [
+        { dx: 0, dy: 0 }, { dx: 9, dy: -2 }, { dx: -8, dy: 3 }, { dx: 15, dy: 1 }, { dx: -13, dy: -3 },
+        { dx: 7, dy: 5 }, { dx: 21, dy: -1 }, { dx: -5, dy: -5 }, { dx: 18, dy: 4 }, { dx: -10, dy: 4 },
+      ];
+
+      const squids = [
+        { x: -38, y: 126, vx: 0.09, dir: 1 },
+        { x: 148, y: 153, vx: 0.06, dir: -1 },
+      ];
+
+      const plankton = Array.from({ length: 48 }, () => ({
+        x: Math.random() * CONFIG.width,
+        y: 6 + Math.random() * (CONFIG.height * 0.88),
+        ph: Math.random() * 6.28,
+        sz: Math.random() < 0.22 ? 2 : 1,
+      }));
+
+      const rockDefs = [
+        { x: 0, base: CONFIG.height, seg: [0, 13, 8, 9, 14, 12, 22, 6, 30, 10, 37, 8, 44, 13, 52, 14] },
+        { x: 42, base: CONFIG.height, seg: [0, 10, 7, 6, 14, 10, 22, 4, 30, 8, 38, 10] },
+        { x: 80, base: CONFIG.height, seg: [0, 11, 9, 7, 16, 10, 25, 3, 33, 8, 42, 11] },
+        { x: 8, base: 207, seg: [0, 5, 5, 2, 11, 4, 17, 1, 23, 3, 29, 5] },
+        { x: 62, base: 207, seg: [0, 4, 5, 1, 10, 3, 15, 1, 20, 3, 25, 4] },
+      ];
+
+      const BELL = [[2, 0, 4], [1, 1, 6], [0, 2, 8], [0, 3, 8], [0, 4, 8], [1, 5, 6], [2, 6, 4]];
+      const MANTLE = [[4, 0, 6], [2, 1, 10], [1, 2, 12], [0, 3, 14], [1, 4, 12], [2, 5, 10], [4, 6, 6], [5, 7, 4], [6, 8, 2]];
+
+      function drawBG() {
+        const logicalHeight = CONFIG.height * CONFIG.scale;
+        const logicalWidth = CONFIG.width * CONFIG.scale;
+        const g = ctx.createLinearGradient(0, 0, 0, logicalHeight);
+
+        if (state.isDarkTheme) {
+          g.addColorStop(0, '#0d2145');
+          g.addColorStop(0.3, '#091830');
+          g.addColorStop(0.6, '#060f1e');
+          g.addColorStop(1, '#030810');
+        } else {
+          g.addColorStop(0, '#f5f5f5');
+          g.addColorStop(0.3, '#e8e8e8');
+          g.addColorStop(0.6, '#dcdcdc');
+          g.addColorStop(1, '#cccccc');
+        }
+
+        ctx.fillStyle = g;
+        ctx.fillRect(0, 0, logicalWidth, logicalHeight);
+
+        clr(20, 60, 120, state.isDarkTheme ? 0.022 : 0.01);
+        for (let r = 0; r < CONFIG.height; r += 4) {
+          ctx.fillRect(0, r * CONFIG.scale, logicalWidth, CONFIG.scale);
+        }
+      }
+
+      function drawCaustics(t) {
+        const logicalWidth = CONFIG.width * CONFIG.scale;
+        const logicalHeight = CONFIG.height * CONFIG.scale;
+
+        for (let i = 0; i < 6; i++) {
+          const cx = ((i * 23 + Math.sin(t * 0.22 + i * 1.1) * 9 + CONFIG.width) % CONFIG.width) * CONFIG.scale;
+          const cy = (8 + i * 19 + Math.sin(t * 0.31 + i * 0.8) * 5) * CONFIG.scale;
+          const gr = ctx.createRadialGradient(cx, cy, CONFIG.scale, cx, cy, 24 * CONFIG.scale);
+          gr.addColorStop(0, 'rgba(14,65,145,.07)');
+          gr.addColorStop(1, 'rgba(0,0,0,0)');
+          ctx.fillStyle = gr;
+          ctx.fillRect(0, 0, logicalWidth, logicalHeight);
+        }
+      }
+
+      const drawPlankton = (t) => {
+        for (const pk of plankton) {
+          clr(80, 195, 255, 0.2 + Math.sin(t * 1.85 + pk.ph) * 0.18);
+          p(Math.round(pk.x), Math.round(pk.y), pk.sz, pk.sz);
+        }
+      };
+
+      function drawFloor(t) {
+        clr(4, 10, 18, 1);
+        p(0, 200, CONFIG.width, CONFIG.height - 200);
+
+        for (const rd of rockDefs) {
+          clr(9, 21, 34, 1);
+          for (let i = 0; i < rd.seg.length - 2; i += 2) {
+            const x0 = rd.seg[i];
+            const h0 = rd.seg[i + 1];
+            const x1 = rd.seg[i + 2];
+            const h1 = rd.seg[i + 3];
+            for (let rx = x0; rx < x1; rx++) {
+              const frac = (rx - x0) / (x1 - x0);
+              const rh = Math.max(1, Math.round(h0 + (h1 - h0) * frac));
+              p(rd.x + rx, rd.base - rh, 1, rh);
+            }
+          }
+
+          clr(15, 34, 55, 0.5);
+          for (let i = 0; i < rd.seg.length - 2; i += 2) {
+            const x0 = rd.seg[i];
+            const h0 = rd.seg[i + 1];
+            const x1 = rd.seg[i + 2];
+            const h1 = rd.seg[i + 3];
+            p(rd.x + Math.round((x0 + x1) / 2), rd.base - Math.round((h0 + h1) / 2), 1, 1);
+          }
+        }
+
+        for (let i = 0; i < 24; i++) {
+          clr(55, 150, 195, 0.1 + Math.sin(t * 1.1 + i * 0.65) * 0.07);
+          p((i * 5 + 2) % CONFIG.width, 200 + (i % 4), 1, 1);
+        }
+      }
+
+      function drawJelly(jx, jy, phase, r, g, b, t) {
+        const pulse = Math.sin(t * 1.6 + phase);
+        const gx = Math.round(jx) - 4;
+        const gy = Math.round(jy);
+
+        clr(r, g, b, 0.09 + pulse * 0.04);
+        for (const [ox, oy, w] of BELL) p(gx + ox - 1, gy + oy - 1, w + 2, 3);
+
+        clr(r, g, b, 0.52 + pulse * 0.1);
+        for (const [ox, oy, w] of BELL) p(gx + ox, gy + oy, w, 1);
+
+        clr(255, 255, 255, 0.18 + pulse * 0.06);
+        p(gx + 2, gy + 1, 3, 2);
+        p(gx + 3, gy, 2, 1);
+
+        clr(r, g, b, 0.9);
+        p(gx + 1, gy + 5, 1, 1);
+        p(gx + 3, gy + 5, 1, 1);
+        p(gx + 5, gy + 5, 1, 1);
+
+        const tX = [gx + 1, gx + 3, gx + 5, gx + 7];
+        const tLen = 9 + Math.round(pulse * 2);
+        for (let i = 0; i < 4; i++) {
+          for (let s = 0; s < tLen; s++) {
+            const ty = gy + 7 + s;
+            if (ty >= 200) break;
+            const wave = Math.round(Math.sin(t * 2.3 + phase + i + s * 0.35) * 1.5);
+            const a = Math.max(0, (0.5 - (s / tLen) * 0.42) * (0.65 + pulse * 0.15));
+            clr(r, g, b, a);
+            p(Math.max(0, Math.min(CONFIG.width - 1, tX[i] + wave)), ty, 1, 1);
+          }
+        }
+      }
+
+      function drawFish(fx, fy, dir, r, g, b, a) {
+        fx = Math.round(fx);
+        fy = Math.round(fy);
+        if (fx < -6 || fx > CONFIG.width + 6) return;
+
+        clr(r, g, b, a);
+        p(fx + 1, fy, 3, 1);
+        p(fx, fy + 1, 5, 1);
+        p(fx + 1, fy + 2, 3, 1);
+
+        clr(Math.min(r + 80, 255), Math.min(g + 80, 255), 255, a);
+        p(dir >= 0 ? fx + 4 : fx, fy + 1, 1, 1);
+
+        clr(r, g, b, a * 0.6);
+        const tx = dir >= 0 ? fx : fx + 4;
+        p(tx, fy, 1, 1);
+        p(tx, fy + 2, 1, 1);
+      }
+
+      function drawSchool(t) {
+        for (let i = 0; i < fishOff.length; i++) {
+          const fo = fishOff[i];
+          const wv = Math.sin(t * 1.9 + i * 0.65) * 1.3;
+          const a = 0.38 + Math.sin(t * 0.5 + i * 0.4) * 0.1;
+          drawFish(school.x + fo.dx, school.y + fo.dy + wv, school.dir, 190, 215, 240, a);
+        }
+      }
+
+      function drawSquid(sq, t) {
+        const gx = Math.round(sq.x);
+        const gy = Math.round(sq.y + Math.sin(t * 1.1 + sq.x * 0.06) * 1.2);
+
+        clr(175, 55, 75, 0.11);
+        for (const [ox, oy, w] of MANTLE) p(gx + ox - 1, gy + oy - 1, w + 2, 3);
+
+        clr(150, 46, 63, 0.82);
+        for (const [ox, oy, w] of MANTLE) p(gx + ox, gy + oy, w, 1);
+
+        clr(200, 98, 118, 0.28);
+        p(gx + 3, gy + 1, 8, 1);
+        p(gx + 2, gy + 2, 9, 1);
+
+        clr(122, 37, 53, 0.72);
+        if (sq.dir > 0) {
+          p(gx - 1, gy + 2, 2, 3);
+          p(gx - 2, gy + 3, 1, 2);
+        } else {
+          p(gx + 13, gy + 2, 2, 3);
+          p(gx + 15, gy + 3, 1, 2);
+        }
+
+        const ex = sq.dir > 0 ? gx + 10 : gx + 2;
+        clr(255, 162, 172, 0.92);
+        p(ex, gy + 3, 2, 2);
+        clr(12, 4, 7, 1);
+        p(ex, gy + 3, 1, 1);
+
+        const hx = sq.dir > 0 ? gx + 14 : gx - 1;
+        for (let i = 0; i < 8; i++) {
+          const ty = gy + 1 + Math.floor(i * 0.85);
+          const tl = 3 + (i % 4);
+          const tw = Math.round(Math.sin(t * 3.2 + i * 0.85));
+          clr(193, 70, 88, Math.max(0, 0.6 - i * 0.045));
+          for (let s = 0; s < tl; s++) {
+            const tx = sq.dir > 0 ? hx + s : hx - s;
+            if (tx >= 0 && tx < CONFIG.width) p(tx, ty + tw, 1, 1);
+          }
+        }
+      }
+
+      function drawVignette() {
+        const logicalWidth = CONFIG.width * CONFIG.scale;
+        const logicalHeight = CONFIG.height * CONFIG.scale;
+        const cx = logicalWidth / 2;
+        const cy = logicalHeight / 2;
+        const gr = ctx.createRadialGradient(cx, cy, logicalHeight * 0.18, cx, cy, logicalHeight * 0.72);
+        gr.addColorStop(0, 'rgba(0,0,0,0)');
+        gr.addColorStop(1, 'rgba(0,2,8,.58)');
+        ctx.fillStyle = gr;
+        ctx.fillRect(0, 0, logicalWidth, logicalHeight);
+      }
+
+      function drawTimerGlow() {
+        const logicalWidth = CONFIG.width * CONFIG.scale;
+        const logicalHeight = CONFIG.height * CONFIG.scale;
+        const cx = 60 * CONFIG.scale;
+        const cy = 98 * CONFIG.scale;
+        const gr = ctx.createRadialGradient(cx, cy, 4, cx, cy, 52 * CONFIG.scale);
+        gr.addColorStop(0, 'rgba(0,110,255,.042)');
+        gr.addColorStop(0.6, 'rgba(0,60,180,.015)');
+        gr.addColorStop(1, 'rgba(0,0,0,0)');
+        ctx.fillStyle = gr;
+        ctx.fillRect(0, 0, logicalWidth, logicalHeight);
+      }
+
+      function drawBubbles() {
+        for (let i = state.bubbles.length - 1; i >= 0; i--) {
+          const bubble = state.bubbles[i];
+          bubble.y -= CONFIG.bubbleSpeed;
+          bubble.age += 1;
+
+          if (bubble.age > CONFIG.bubbleLifetime) {
+            state.bubbles.splice(i, 1);
+            continue;
+          }
+
+          const alpha = Math.max(0, 1 - bubble.age / CONFIG.bubbleLifetime);
+          clr(100, 180, 255, alpha * 0.4);
+          p(bubble.x, bubble.y, 1, 1);
+        }
+      }
+
+      function update(t) {
+        if (state.isPaused) return;
+
+        for (const jelly of jellies) {
+          jelly.y += jelly.vy;
+          if (jelly.y < -26) {
+            jelly.y = CONFIG.height + 8;
+            jelly.x = 8 + Math.random() * (CONFIG.width - 16);
+          }
+        }
+
+        for (const squid of squids) {
+          squid.x += squid.vx * squid.dir;
+          if (squid.dir > 0 && squid.x > CONFIG.width + 42) squid.x = -42;
+          if (squid.dir < 0 && squid.x < -42) squid.x = CONFIG.width + 42;
+        }
+
+        school.x += school.vx * school.dir;
+        if (school.dir > 0 && school.x > CONFIG.width + 28) school.dir = -1;
+        if (school.dir < 0 && school.x < -28) school.dir = 1;
+        school.y = 82 + Math.sin(t * 0.28) * 12;
+      }
+
+      function draw(t) {
+        const logicalWidth = CONFIG.width * CONFIG.scale;
+        const logicalHeight = CONFIG.height * CONFIG.scale;
+
+        ctx.clearRect(0, 0, logicalWidth, logicalHeight);
+        drawBG();
+        drawCaustics(t);
+        drawPlankton(t);
+        drawFloor(t);
+        drawSchool(t);
+        drawBubbles();
+        for (const squid of squids) drawSquid(squid, t);
+        for (const jelly of jellies) drawJelly(jelly.x, jelly.y, jelly.phase, jelly.r, jelly.g, jelly.b, t);
+        drawVignette();
+        drawTimerGlow();
+      }
+
+      function updateFPS(now) {
+        state.frameCount += 1;
+        const elapsed = now - state.lastFpsTime;
+
+        if (elapsed >= 1000) {
+          state.fps = Math.round((state.frameCount * 1000) / elapsed);
+          fpsCounter.textContent = String(state.fps);
+          state.frameCount = 0;
+          state.lastFpsTime = now;
+        }
+      }
+
+      function updateEntityCount() {
+        const total = jellies.length + squids.length + fishOff.length + plankton.length + state.bubbles.length;
+        entityCounter.textContent = String(total);
+      }
+
+      function loop(ts) {
+        const t = ts / 1000;
+        update(t);
+        draw(t);
+        updateFPS(ts);
+        if (state.showInfo) updateEntityCount();
+        requestAnimationFrame(loop);
+      }
+
+      const debounce = (fn, wait) => {
+        let timeout = 0;
+        return (...args) => {
+          window.clearTimeout(timeout);
+          timeout = window.setTimeout(() => fn(...args), wait);
+        };
+      };
+
+      function spawnBubblesFromEvent(event) {
+        const rect = cvs.getBoundingClientRect();
+        const x = Math.floor((event.clientX - rect.left) / (rect.width / CONFIG.width));
+        const y = Math.floor((event.clientY - rect.top) / (rect.height / CONFIG.height));
+
+        for (let i = 0; i < 5; i++) {
+          if (state.bubbles.length >= CONFIG.maxBubbles) {
+            state.bubbles.shift();
+          }
+          state.bubbles.push({ x: x + (Math.random() - 0.5) * 5, y, age: 0 });
+        }
+      }
+
+      themeBtn.addEventListener('click', () => {
+        state.isDarkTheme = !state.isDarkTheme;
+        document.documentElement.dataset.theme = state.isDarkTheme ? 'dark' : 'light';
+        themeBtn.textContent = state.isDarkTheme ? '🌙' : '☀️';
+      });
+
+      pauseBtn.addEventListener('click', () => {
+        state.isPaused = !state.isPaused;
+        pauseBtn.textContent = state.isPaused ? '▶️' : '⏸';
+      });
+
+      infoBtn.addEventListener('click', () => {
+        state.showInfo = !state.showInfo;
+        infoPanel.style.display = state.showInfo ? 'block' : 'none';
+      });
+
+      cvs.addEventListener('click', spawnBubblesFromEvent, { passive: true });
+      cvs.addEventListener('pointerdown', spawnBubblesFromEvent, { passive: true });
+
+      window.addEventListener('resize', debounce(initCanvas, 250), { passive: true });
+
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden) {
+          state.previousPausedState = state.isPaused;
+          state.isPaused = true;
+        } else {
+          state.isPaused = state.previousPausedState;
+        }
+        pauseBtn.textContent = state.isPaused ? '▶️' : '⏸';
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === ' ') {
+          event.preventDefault();
+          pauseBtn.click();
+        } else if (event.key.toLowerCase() === 't') {
+          themeBtn.click();
+        } else if (event.key.toLowerCase() === 'i') {
+          infoBtn.click();
+        }
+      });
+
+      initCanvas();
+      requestAnimationFrame(loop);
+    })();
+  </script>
 </body>
 </html>
